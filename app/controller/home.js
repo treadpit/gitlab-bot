@@ -8,7 +8,11 @@ class HomeController extends Controller {
     const { ctx } = this;
     const { path = '' } = ctx.params
 
-    const webhookUrl = process.env['WEBHOOK_URL' + (path ? '_' + path.toUpperCase() : '')];
+    const wexinWebhookUrl = process.env['WEXIN_WEBHOOK_URL' + (path ? '_' + path.toUpperCase() : '')];
+    const dingTalkWebhookUrl = process.env['DINGTALK_WEBHOOK_URL' + (path ? '_' + path.toUpperCase() : '')];
+
+    const webhookUrl = wexinWebhookUrl || dingTalkWebhookUrl
+    const isDingTalk = dingTalkWebhookUrl && !wexinWebhookUrl
 
     ctx.logger.info('request body: ', ctx.request.body);
     const message = await ctx.service.webhook.translateMsg(ctx.request.body);
@@ -21,13 +25,17 @@ class HomeController extends Controller {
 
 
     if (!webhookUrl) {
-      ctx.logger.error('webhook url error, webhookUrl: ' + webhookUrl);
+      ctx.logger.error('webhook url error: no webhookUrl');
       ctx.body = {
-        error: 'webhook url error, webhookUrl: ' + webhookUrl,
+        error: 'webhook url error: no webhookUrl',
       };
       return
     }
-
+    if (isDingTalk) {
+      message.markdown.title = 'Gitlab robot say:'
+      message.markdown.text = message.markdown.content
+      delete message.markdown.content
+    }
     const result = await ctx.curl(webhookUrl, {
       method: 'POST',
       headers: {

@@ -28,9 +28,26 @@ Gitlab pipeline 流水线
 
 ![alt gitlab-pipeline-msg](./docs/gitlab-pipeline-msg-1.png)
 
+钉钉消息预览图
+
+![dingtalk](./docs/gitlab-dingtalk.jpg)
+
+
+## 区分平台
+
+- WEXIN_WEBHOOK_URL_  企业微信
+
+- DINGTALK_WEBHOOK_URL_  钉钉
+
+以下章节内容中以 `WEBHOOK_URL_` 代指各平台，自行根据情况替换为对应平台环境变量名
+
 ## 与企业微信对接
 
-如何添加群机器人可自行百度。企业微[信群机器人配置说明](https://work.weixin.qq.com/api/doc/90000/90136/91770)。
+如何添加群机器人可自行百度。企业微信 [群机器人配置说明](https://work.weixin.qq.com/api/doc/90000/90136/91770)。
+
+## 与钉钉对接
+
+如何添加群机器人可自行百度。钉钉 [群机器人配置说明](https://ding-doc.dingtalk.com/doc#/serverapi2/qf2nxq)。
 
 
 ## 应用部署运行
@@ -83,3 +100,4 @@ URL填写：https://192.168.100.100:7001/proj
 具体设置，参见下图：
 
 ![alt gitlab集成图片](./docs/gitlab-integration-1.png)
+

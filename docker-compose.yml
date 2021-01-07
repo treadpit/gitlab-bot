@@ -7,7 +7,7 @@ services:
       - 7001:7001
     environment:
       - "CONTEXT_PATH=/"
-      - "WEBHOOK_URL_PROJ=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=ABCDEFG"
+      - "WEXIN_WEBHOOK_URL_PROJ=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=ABCDEFG"
     deploy:
       replicas: 1
       resources:

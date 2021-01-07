@@ -78,7 +78,7 @@ class WebhookService extends Service {
 
     return {
       msgtype: 'markdown',
-      markdown: { content: content.join(' \n  ') },
+      markdown: { content: content.join(' \n \n  ') },
     };
   }
 
@@ -99,8 +99,8 @@ class WebhookService extends Service {
     }
 
     content.push(`\`${user_name}\`${op}[[${path_with_namespace}/${branch}](${web_url}/tree/${branch})]。`)
-    content.push(`> 项目 [[${projName} | ${path_with_namespace}](${web_url})]\n`)
-    total_commits_count && content.push(`**共提交${total_commits_count}次：**\n`)
+    content.push(`> 项目 [[${projName} | ${path_with_namespace}](${web_url})]\n \n`)
+    total_commits_count && content.push(`**共提交${total_commits_count}次：**\n \n`)
     total_commits_count && content.push(this.generateListItem('', this.formatCommits(commits).text));
 
     return content
@@ -144,16 +144,16 @@ class WebhookService extends Service {
     }
 
     content.push(`[[#${pipelineId}流水线](${pipelineUrl})] <font color="${statusColor}">${statusString}</font>，位于${ref}分支，由<font color="info">${sourceString}</font>触发。`)
-    content.push(`> 项目 [[${projName} | ${path_with_namespace}](${web_url})]\n`)
-    content.push('**流水线详情：**\n')
+    content.push(`> 项目 [[${projName} | ${path_with_namespace}](${web_url})]\n \n`)
+    content.push('**流水线详情：**\n \n')
 
     name && content.push(this.generateListItem('操作人', `\`${name}\``))
 
     duration && content.push(this.generateListItem('总耗时', `${this.formatDuration(duration)}`))
     !_.isEmpty(stages) && content.push(this.generateListItem(`共${stages.length}个阶段`, `${stages.join(' / ')}`))
     !_.isEmpty(mr) && content.push(this.generateListItem('合并详情', `[${mr.title}](${mr.url})，\`${mr.source_branch}\`合并至\`${mr.target_branch}\``));
-    !_.isEmpty(commit) && content.push(this.generateListItem('提交详情', `\n${commit.author.name}: [${S(commit.message).collapseWhitespace()}](${commit.url})`));
-    !_.isEmpty(builds) && content.push(this.generateListItem(`编译详情`, `\n${this.formatBuilds(builds, username, web_url).join('\n')}`))
+    !_.isEmpty(commit) && content.push(this.generateListItem('提交详情', `\n \n${commit.author.name}: [${S(commit.message).collapseWhitespace()}](${commit.url})`));
+    !_.isEmpty(builds) && content.push(this.generateListItem(`编译详情`, `\n \n${this.formatBuilds(builds, username, web_url).join('\n \n')}`))
 
     return content
   }
@@ -187,12 +187,12 @@ class WebhookService extends Service {
     }
 
     content.push(`\`${name}\`**${stateString}**[[#${mrId}合并请求 ${title}](${mrUrl})]，\`${source_branch}\`合并至\`${target_branch}\`${stateEnding}。`)
-    content.push(`> 项目 [[${projName} | ${path_with_namespace}](${web_url})]\n`)
-    content.push('**MR详情：**\n')
+    content.push(`> 项目 [[${projName} | ${path_with_namespace}](${web_url})]\n \n`)
+    content.push('**MR详情：**\n \n')
 
     updated_at && content.push(this.generateListItem('提交时间', moment(updated_at).format('MM-DD HH:mm')))
     description && content.push(this.generateListItem('合并详情', description))
-    !_.isEmpty(commit) && content.push(this.generateListItem('提交详情', `\n${commit.author.name}: [${S(commit.message).collapseWhitespace()}](${commit.url})`));
+    !_.isEmpty(commit) && content.push(this.generateListItem('提交详情', `\n \n${commit.author.name}: [${S(commit.message).collapseWhitespace()}](${commit.url})`));
 
     return content
   }
@@ -212,10 +212,10 @@ class WebhookService extends Service {
     }
 
     content.push(`\`${user_name}\`${op}标签[[${path_with_namespace}/${tag}](${web_url}/-/tags/${tag})]。`)
-    content.push(`> 项目 [[${projName} | ${path_with_namespace}](${web_url})]\n`)
+    content.push(`> 项目 [[${projName} | ${path_with_namespace}](${web_url})]\n \n`)
 
     message && content.push(this.generateListItem('说明', message));
-    total_commits_count && content.push(`**共提交${total_commits_count}次：**\n`)
+    total_commits_count && content.push(`**共提交${total_commits_count}次：**\n \n`)
     total_commits_count && content.push(this.generateListItem('', this.formatCommits(commits).text));
     return content
   }
@@ -228,9 +228,9 @@ class WebhookService extends Service {
     const { statusColor, statusString } = this.formatStatus(state);
 
     content.push(`[[#${issueId}议题](${issueUrl})] 状态:<font color="${statusColor}">${statusString}</font>，由<font color="info">${name}</font>触发。`);
-    content.push(`> 项目 [[${projName} | ${path_with_namespace}](${web_url})]\n`);
+    content.push(`> 项目 [[${projName} | ${path_with_namespace}](${web_url})]\n \n`);
 
-    content.push('**议题详情：**\n');
+    content.push('**议题详情：**\n \n');
 
     name && content.push(this.generateListItem('操作人', `\`${name}\``));
 
@@ -240,7 +240,7 @@ class WebhookService extends Service {
     let descriptios = [];
 
     if (description) {
-      descriptios = description.split('\n');
+      descriptios = description.split('\n \n');
     }
     content.push(this.generateListItem('议题描述', ' '));
     for (let index = 0; index < descriptios.length; index++) {
@@ -277,9 +277,9 @@ class WebhookService extends Service {
     const { title, message, action, url: wiki_url } = object_attributes || {};
 
     content.push(`[**WIKI**] [标题:${title}](${wiki_url})，由<font color="info">${name}</font>触发。`);
-    content.push(`> 项目 [[${projName} | ${path_with_namespace}](${web_url})]\n`);
+    content.push(`> 项目 [[${projName} | ${path_with_namespace}](${web_url})]\n \n`);
 
-    content.push('**WIKI详情：**\n');
+    content.push('**WIKI详情：**\n \n');
 
     name && content.push(this.generateListItem('操作人', `\`${name}\``));
 
@@ -321,9 +321,9 @@ class WebhookService extends Service {
     const { statusColor, statusString } = this.formatStatus(state);
 
     content.push(`[[#${issueNoteId}议题笔记](${issueNoteUrl})] 议题状态:<font color="${statusColor}">${statusString}</font>，所属议题:[${title}](${issueNoteUrl})，由<font color="info">${name}</font>触发。`);
-    content.push(`> 项目 [[${projName} | ${path_with_namespace}](${web_url})]\n`);
+    content.push(`> 项目 [[${projName} | ${path_with_namespace}](${web_url})]\n \n`);
 
-    content.push('**议题笔记详情：**\n');
+    content.push('**议题笔记详情：**\n \n');
 
     name && content.push(this.generateListItem('操作人', `\`${name}\``));
 
@@ -332,7 +332,7 @@ class WebhookService extends Service {
     let descriptios = [];
 
     if (description) {
-      descriptios = description.split('\n');
+      descriptios = description.split('\n \n');
     }
     content.push(this.generateListItem('议题描述', ' '));
     for (let index = 0; index < descriptios.length; index++) {
@@ -344,7 +344,7 @@ class WebhookService extends Service {
     let notes = [];
 
     if (note) {
-      notes = note.split('\n');
+      notes = note.split('\n \n');
     }
     content.push(this.generateListItem('笔记内容', ' '));
     for (let index = 0; index < notes.length; index++) {
@@ -436,8 +436,8 @@ class WebhookService extends Service {
 
     result.text = `新增: \`${result.changes.added}\` `
       + `修改: \`${result.changes.modified}\` `
-      + `删除: \`${result.changes.removed}\` \n `
-      + result.commits.join('\n')
+      + `删除: \`${result.changes.removed}\` \n \n `
+      + result.commits.join('\n \n')
 
 
     return result
